@@ -1,14 +1,13 @@
 ---
-title: SDC Redis Zone
+title: SDC amonredis core zone
 markdown2extras: wiki-tables, code-friendly, cuddled-lists
-apisections: Master API: Monitors, Master API: Probes, Master API: Alarms, Master API: Maintenance Windows, Master API: Miscellaneous, Relay API, Relay Admin API
 ---
 
-# SDC Redis Zone
+# SDC amonredis core zone
 
-SDC 7 has a redis zone. This repo builds it. The sdc "redis" zone is a core
-zone shared by a few SDC services. The purpose of this document is to identify
-those services and ensure they don't collide.
+SDC 7 has an amonredis zone. This repo builds it. The "amonredis" core zone
+runs redis **for Amon's use only**. See MON-248 for justification at
+Amon having its own zone.
 
 A redis instance can have a number of separate databases. By default this is
 16, and the current redis config doesn't change that. A redis connection
@@ -24,9 +23,6 @@ This will blow away data for other apps. Instead use
 ||**DB Index**||**Service**||
 ||0||None. `0` is the default index. By design, no SDC service should use this index. This forces legal redis clients to explicitly choose an assigned DB index.||
 ||1||Amon (the 'amon-master' service in the 'amon' zone).||
-||2||CNAPI||
-||3||AdminUI||
-||4||VMAPI||
 
 
 # Operators Guide

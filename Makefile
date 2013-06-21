@@ -1,17 +1,11 @@
-NAME=redis
+NAME=amonredis
 DOC_FILES=index.restdown
-
-ifeq ($(VERSION), "")
-    @echo "Use gmake"
-endif
-
 
 include ./tools/mk/Makefile.defs
 
-
 TAR=tar
-RELEASE_TARBALL=redis-pkg-$(STAMP).tar.bz2
-CLEAN_FILES += redis-pkg-*.tar.bz2
+RELEASE_TARBALL=$(NAME)-pkg-$(STAMP).tar.bz2
+CLEAN_FILES += $(NAME)-pkg-*.tar.bz2
 
 
 #
@@ -32,8 +26,8 @@ publish:
       echo "error: 'BITS_DIR' must be set for 'publish' target"; \
       exit 1; \
     fi
-	mkdir -p $(BITS_DIR)/redis
-	cp $(RELEASE_TARBALL) $(BITS_DIR)/redis/$(RELEASE_TARBALL)
+	mkdir -p $(BITS_DIR)/$(NAME)
+	cp $(RELEASE_TARBALL) $(BITS_DIR)/$(NAME)/$(RELEASE_TARBALL)
 
 
 include ./tools/mk/Makefile.deps
