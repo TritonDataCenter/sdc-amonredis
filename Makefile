@@ -23,9 +23,9 @@ $(RELEASE_TARBALL):
 
 publish:
 	@if [[ -z "$(BITS_DIR)" ]]; then \
-      echo "error: 'BITS_DIR' must be set for 'publish' target"; \
-      exit 1; \
-    fi
+		echo "error: 'BITS_DIR' must be set for 'publish' target"; \
+		exit 1; \
+	fi
 	mkdir -p $(BITS_DIR)/$(NAME)
 	cp $(RELEASE_TARBALL) $(BITS_DIR)/$(NAME)/$(RELEASE_TARBALL)
 
