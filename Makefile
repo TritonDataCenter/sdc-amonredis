@@ -32,3 +32,5 @@ publish:
 
 include ./tools/mk/Makefile.deps
 include ./tools/mk/Makefile.targ
+
+sdc-scripts: deps/%/.git
