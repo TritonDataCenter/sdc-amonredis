@@ -34,7 +34,7 @@ To find the redis zone(s) use the following. Currently there is only one,
 though redis clustering *might* be possible at some point.
 
     sdc-vmapi /vms?owner_uuid=$(bash /lib/sdc/config.sh -json | json ufds_admin_uuid) \
-        | json -H -c "tags.smartdc_role=='redis'"
+        | json -H -c "this.tags.smartdc_role=='amonredis'"
 
 Look at the "redis" service.
 
