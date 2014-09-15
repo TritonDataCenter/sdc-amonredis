@@ -8,18 +8,51 @@
     Copyright (c) 2014, Joyent, Inc.
 -->
 
-# SDC "amonredis" core zone
+# sdc-amonredis
 
-- Repository: <git@git.joyent.com:amonredis.git>, <https://mo.joyent.com/amonredis>
-- Who: Trent
-- Docs: <https://mo.joyent.com/docs/amonredis>
-- Tickets/bugs: <https://devhub.joyent.com/jira/browse/MON>
-- CI builds: <https://jenkins.joyent.us/job/amonredis>,
-  <https://bits.joyent.us/builds/amonredis/>
+This repository is part of the Joyent SmartDataCenter project (SDC).  For
+contribution guidelines, issues, and general documentation, visit the main
+[SDC](http://github.com/joyent/sdc) project page.
 
 
-This repo is responsible for building the fs-tarball for the SmartDataCenter
-(SDC) "amonredis" zone. See the docs for more details. This differs from the
-"redis" sdc core zone in that it is used solely by Amon (to buffer against
-load from the other caching-only users of redis).
+# SDC amonredis core zone
+
+SDC 7 has an amonredis zone. This repo builds it. The "amonredis" core zone
+runs redis **for Amon's use only**.
+
+A redis instance can have a number of separate databases. By default this is
+16, and the current redis config doesn't change that. A redis connection
+can select the DB it is using with the [SELECT](http://redis.io/commands/select)
+command.
+
+**Warning: Do NOT use the [FLUSHALL](http://www.redis.io/commands/flushall)!
+This will blow away data for other apps. Instead use
+[FLUSHDB](http://www.redis.io/commands/flushdb).**
+
+# DB index
+
+||**DB Index**||**Service**||
+||0||None. `0` is the default index. By design, no SDC service should use this index. This forces legal redis clients to explicitly choose an assigned DB index.||
+||1||Amon (the 'amon-master' service in the 'amon' zone).||
+
+
+# Operators Guide
+
+This section is intended to give necessary information for diagnosing and
+dealing with issues with the "redis" zone in a SmartDataCenter installation.
+
+To find the redis zone(s) use the following. Currently there is only one,
+though redis clustering *might* be possible at some point.
+
+    sdc-vmapi /vms?owner_uuid=$(bash /lib/sdc/config.sh -json | json ufds_admin_uuid) \
+        | json -H -c "this.tags.smartdc_role=='amonredis'"
+
+Look at the "redis" service.
+
+
+## Logs
+
+||**service/path**||**where**||**tail -f**||
+||redis||in each "redis" zone||`` sdc-login redis; tail -f /var/log/redis/redis.log ``||
+
 

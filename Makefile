@@ -9,7 +9,6 @@
 #
 
 NAME=amonredis
-DOC_FILES=index.restdown
 
 include ./tools/mk/Makefile.defs
 
