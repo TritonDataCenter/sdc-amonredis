@@ -5,41 +5,48 @@
 #
 
 #
-# Copyright (c) 2014, Joyent, Inc.
+# Copyright (c) 2019, Joyent, Inc.
 #
 
 NAME=amonredis
 
-include ./tools/mk/Makefile.defs
+ENGBLD_USE_BUILDIMAGE	= true
+ENGBLD_REQUIRE		:= $(shell git submodule update --init deps/eng)
+include ./deps/eng/tools/mk/Makefile.defs
+TOP ?= $(error Unable to access eng.git submodule Makefiles.)
+
+ifeq ($(shell uname -s),SunOS)
+    include ./deps/eng/tools/mk/Makefile.agent_prebuilt.defs
+endif
 
 TAR=tar
-RELEASE_TARBALL=$(NAME)-pkg-$(STAMP).tar.bz2
-CLEAN_FILES += $(NAME)-pkg-*.tar.bz2
+RELEASE_TARBALL=$(NAME)-pkg-$(STAMP).tar.gz
 
+BASE_IMAGE_UUID = 04a48d7d-6bb5-4e83-8c3b-e60a99e0f48f
+BUILDIMAGE_NAME = $(NAME)
+BUILDIMAGE_DESC	= SDC Amon Redis
+AGENTS		= amon config registrar
 
 #
 # Targets
 #
 
 .PHONY: all
-
 all: sdc-scripts
 
-release: $(RELEASE_TARBALL)
+release: all $(RELEASE_TARBALL)
 
 $(RELEASE_TARBALL):
 	TAR=$(TAR) bash package.sh $(RELEASE_TARBALL)
 
 publish:
-	@if [[ -z "$(BITS_DIR)" ]]; then \
-		echo "error: 'BITS_DIR' must be set for 'publish' target"; \
-		exit 1; \
-	fi
-	mkdir -p $(BITS_DIR)/$(NAME)
-	cp $(RELEASE_TARBALL) $(BITS_DIR)/$(NAME)/$(RELEASE_TARBALL)
-
-
-include ./tools/mk/Makefile.deps
-include ./tools/mk/Makefile.targ
+	mkdir -p $(ENGBLD_BITS_DIR)/$(NAME)
+	cp $(RELEASE_TARBALL) $(ENGBLD_BITS_DIR)/$(NAME)/$(RELEASE_TARBALL)
 
 sdc-scripts: deps/sdc-scripts/.git
+
+ifeq ($(shell uname -s),SunOS)
+    include ./deps/eng/tools/mk/Makefile.agent_prebuilt.targ
+endif
+include ./deps/eng/tools/mk/Makefile.deps
+include ./deps/eng/tools/mk/Makefile.targ

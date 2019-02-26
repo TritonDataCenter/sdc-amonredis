@@ -1,4 +1,6 @@
-/redis-pkg-*.tar.bz2
+/amonredis-pkg-*.tar.bz2
 /docs/*.html
 /docs/*.json
+/bits
 /build
+/make_stamps
